@@ -1,13 +1,19 @@
 import { useState } from "react";
+import axios from "axios";
+import useGetUserId from "../hooks/useGetUserId";
+import { useNavigate } from "react-router-dom";
 
 const CreateRecipe = () => {
+  const userId = useGetUserId();
+  const navigate = useNavigate();
+
   const [recipe, setRecipe] = useState({
     name: "",
     ingredients: [],
     instructions: "",
     imageUrl: "",
     cookingTime: 0,
-    userOwner: "",
+    userOwner: userId,
   });
 
   const handleRecipeChange = (event) => {
@@ -35,10 +41,21 @@ const CreateRecipe = () => {
     }));
   };
 
+  const onSubmit = async (event) => {
+    event.preventDefault();
+    try {
+      await axios.post("http://localhost:3300/recipes", recipe);
+      alert("Recipe created.");
+      navigate("/");
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   return (
     <div className="create-recipe">
       <h2>Create Recipe</h2>
-      <form>
+      <form onSubmit={onSubmit}>
         <label htmlFor="name">Name</label>
         <input
           type="text"
