@@ -3,7 +3,7 @@ import { useState } from "react";
 const CreateRecipe = () => {
   const [recipe, setRecipe] = useState({
     name: "",
-    ingredients: "",
+    ingredients: [],
     instructions: "",
     imageUrl: "",
     cookingTime: 0,
@@ -15,6 +15,23 @@ const CreateRecipe = () => {
     setRecipe((prev) => ({
       ...prev,
       [name]: value,
+    }));
+  };
+
+  const handleIngredientChange = (event, index) => {
+    const { value } = event.target;
+    const ingredients = recipe.ingredients;
+    ingredients[index] = value;
+    setRecipe((prev) => ({
+      ...prev,
+      ingredients,
+    }));
+  };
+
+  const addIngredient = () => {
+    setRecipe((prev) => ({
+      ...prev,
+      ingredients: [...prev.ingredients, ""],
     }));
   };
 
@@ -30,6 +47,18 @@ const CreateRecipe = () => {
           onChange={handleRecipeChange}
         />
         <label htmlFor="ingredients">Ingredients</label>
+        {recipe.ingredients.map((ingredient, index) => (
+          <input
+            key={index}
+            type="text"
+            id="ingredients"
+            value={ingredient}
+            onChange={(event) => handleIngredientChange(event, index)}
+          />
+        ))}
+        <button type="button" onClick={addIngredient}>
+          Add Ingredient
+        </button>
         <label htmlFor="instructions">Instructions</label>
         <textarea
           id="instructions"
@@ -50,6 +79,7 @@ const CreateRecipe = () => {
           value={recipe.cookingTime}
           onChange={handleRecipeChange}
         />
+        <button type="submit">Create Recipe</button>
       </form>
     </div>
   );
